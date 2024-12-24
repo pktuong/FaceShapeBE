@@ -34,9 +34,12 @@ async def predict(file: UploadFile = File(...)):
         image = await file.read()
         processed_img = preprocess_image(image)
         prediction = model.predict(processed_img)
+        
+        # Chuyển numpy.float32 thành float
         label_index = np.argmax(prediction)
         result = y_label_dict[label_index]
-        confidence = np.max(prediction) * 100
+        confidence = float(np.max(prediction)) * 100  # Chuyển đổi sang float
+        
         return {"shape": result, "confidence": round(confidence, 2)}
     except Exception as e:
         return {"error": str(e)}
